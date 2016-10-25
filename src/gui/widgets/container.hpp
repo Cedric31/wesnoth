@@ -85,7 +85,7 @@ public:
 	/** See @ref twidget::demand_reduce_height. */
 	virtual void demand_reduce_height(const unsigned maximum_height) override;
 
-private:
+protected:
 	/** See @ref twidget::calculate_best_size. */
 	virtual tpoint calculate_best_size() const override;
 

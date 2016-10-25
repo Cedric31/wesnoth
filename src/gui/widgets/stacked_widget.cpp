@@ -16,11 +16,11 @@
 
 #include "gui/widgets/stacked_widget.hpp"
 
-#include "gui/auxiliary/find_widget.hpp"
 #include "gui/core/register_widget.hpp"
 #include "gui/widgets/settings.hpp"
 #include "gui/widgets/generator.hpp"
 #include "gettext.hpp"
+#include "wml_exception.hpp"
 
 #include "utils/functional.hpp"
 
@@ -57,42 +57,6 @@ void tstacked_widget::layout_children()
 	}
 }
 
-namespace
-{
-
-/**
- * Swaps an item in a grid for another one.*/
-void swap_grid(tgrid* grid,
-			   tgrid* content_grid,
-			   twidget* widget,
-			   const std::string& id)
-{
-	assert(content_grid);
-	assert(widget);
-
-	// Make sure the new child has same id.
-	widget->set_id(id);
-
-	// Get the container containing the wanted widget.
-	tgrid* parent_grid = nullptr;
-	if(grid) {
-		parent_grid = find_widget<tgrid>(grid, id, false, false);
-	}
-	if(!parent_grid) {
-		parent_grid = find_widget<tgrid>(content_grid, id, true, false);
-	}
-	parent_grid = dynamic_cast<tgrid*>(parent_grid->parent());
-	assert(parent_grid);
-
-	// Replace the child.
-	widget = parent_grid->swap_child(id, widget, false);
-	assert(widget);
-
-	delete widget;
-}
-
-} // namespace
-
 void
 tstacked_widget::finalize(std::vector<tbuilder_grid_const_ptr> widget_builder)
 {
@@ -102,7 +66,11 @@ tstacked_widget::finalize(std::vector<tbuilder_grid_const_ptr> widget_builder)
 	{
 		generator_->create_item(-1, builder, empty_data, nullptr);
 	}
-	swap_grid(nullptr, &grid(), generator_, "_content_grid");
+
+	static const std::string id = "_content_grid";
+	grid().set_id(id);
+	twidget* old_grid = grid().swap_child(id, generator_, true);
+	delete old_grid;
 
 	select_layer(-1);
 }

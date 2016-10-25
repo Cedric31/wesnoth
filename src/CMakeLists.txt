@@ -536,6 +536,7 @@ set(wesnoth-gui_widget_SRC
 	gui/widgets/scrollbar_container.cpp
 	gui/widgets/scrollbar_panel.cpp
 	gui/widgets/settings.cpp
+    gui/widgets/size_fixater.cpp
 	gui/widgets/slider.cpp
 	gui/widgets/spacer.cpp
 	gui/widgets/stacked_widget.cpp
