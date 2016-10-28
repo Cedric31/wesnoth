@@ -14,7 +14,7 @@
 
 #define GETTEXT_DOMAIN "wesnoth-lib"
 
-#include "size_fixater.hpp"
+#include "size_lock.hpp"
 
 #include <gettext.hpp>
 #include <gui/core/register_widget.hpp>
@@ -25,9 +25,9 @@
 namespace gui2
 {
 
-REGISTER_WIDGET(size_fixater)
+REGISTER_WIDGET(size_lock)
 
-void tsize_fixater::layout_children()
+void tsize_lock::layout_children()
 {
 	assert(generator_ != nullptr);
 	assert(generator_->get_item_count() == 1);
@@ -35,7 +35,7 @@ void tsize_fixater::layout_children()
 	generator_->item(0).layout_children();
 }
 
-void tsize_fixater::finalize(tbuilder_grid_const_ptr widget_builder)
+void tsize_lock::finalize(tbuilder_grid_const_ptr widget_builder)
 {
 	assert(generator_ != nullptr);
 	
@@ -47,7 +47,7 @@ void tsize_fixater::finalize(tbuilder_grid_const_ptr widget_builder)
 	delete old_grid;
 }
 
-tsize_fixater_definition::tsize_fixater_definition(const config& cfg) :
+tsize_lock_definition::tsize_lock_definition(const config& cfg) :
 	tcontrol_definition(cfg)
 {
 	DBG_GUI_P << "Parsing fixed size widget " << id << '\n';
@@ -57,22 +57,22 @@ tsize_fixater_definition::tsize_fixater_definition(const config& cfg) :
 
 /*WIKI
  * @page = GUIWidgetDefinitionWML
- * @order = 1_size_fixater
+ * @order = 1_size_lock
  *
- * == Size fixater ==
+ * == Size lock ==
  *
- * A size fixater contains one child widget and forces it to have the specified size.
+ * A size lock contains one child widget and forces it to have the specified size.
  * This can be used, for example, when there are two list boxes in different rows of
  * the same grid and it's desired that only one list box changes size when its
  * contents change.
  *
- * A size fixater has no states.
+ * A size lock has no states.
  * @begin{parent}{name="gui/"}
- * @begin{tag}{name="size_fixater_definition"}{min=0}{max=-1}{super="generic/widget_definition"}
- * @end{tag}{name="size_fixater_definition"}
+ * @begin{tag}{name="size_lock_definition"}{min=0}{max=-1}{super="generic/widget_definition"}
+ * @end{tag}{name="size_lock_definition"}
  * @end{tag}{name="gui/"}
  */
-tsize_fixater_definition::tresolution::tresolution(const config& cfg) :
+tsize_lock_definition::tresolution::tresolution(const config& cfg) :
 	tresolution_definition_(cfg), grid(nullptr)
 {
 	const config& child = cfg.child("grid");
@@ -83,12 +83,12 @@ tsize_fixater_definition::tresolution::tresolution(const config& cfg) :
 
 /*WIKI
  * @page = GUIWidgetInstanceWML
- * @order = 2_size_fixater
+ * @order = 2_size_lock
  * @begin{parent}{name="gui/window/resolution/grid/row/column/"}
- * @begin{tag}{name="size_fixater"}{min=0}{max=-1}{super="generic/widget_instance"}
- * == Size fixater ==
+ * @begin{tag}{name="size_lock"}{min=0}{max=-1}{super="generic/widget_instance"}
+ * == Size lock ==
  *
- * A size fixater contains one child widget and forces it to have the specified size.
+ * A size lock contains one child widget and forces it to have the specified size.
  * This can be used, for example, when there are two list boxes in different rows of
  * the same grid and it's desired that only one list box changes size when its
  * contents change.
@@ -101,30 +101,30 @@ tsize_fixater_definition::tresolution::tresolution(const config& cfg) :
  *
  * The variables available are the same as for window resolution, see
  * [[GuiToolkitWML#Resolution_2]] for the list of items.
- * @end{tag}{name="size_fixater"}
+ * @end{tag}{name="size_lock"}
  * @end{parent}{name="gui/window/resolution/grid/row/column/"}
  */
 
 namespace implementation
 {
 
-tbuilder_size_fixater::tbuilder_size_fixater(const config& cfg) :
-	tbuilder_control(cfg), width_(cfg["width"]), height_(cfg["height"]), content_(nullptr)
+tbuilder_size_lock::tbuilder_size_lock(const config& cfg) :
+	tbuilder_control(cfg), content_(nullptr), width_(cfg["width"]), height_(cfg["height"])
 {
 	VALIDATE(cfg.has_child("widget"), _("No widget defined."));
 	content_ = std::make_shared<tbuilder_grid>(cfg.child("widget"));
 }
 
-twidget* tbuilder_size_fixater::build() const
+twidget* tbuilder_size_lock::build() const
 {
-	tsize_fixater* widget = new tsize_fixater();
+	tsize_lock* widget = new tsize_lock();
 
 	init_control(widget);
 
 	DBG_GUI_G << "Window builder: placed fixed size widget '" << id <<
 		"' with definition '" << definition << "'.\n";
 
-	auto conf = std::static_pointer_cast<const tsize_fixater_definition::tresolution>(widget->config());
+	auto conf = std::static_pointer_cast<const tsize_lock_definition::tresolution>(widget->config());
 	assert(conf != nullptr);
 
 	widget->init_grid(conf->grid);

@@ -27,17 +27,17 @@ namespace gui2
 
 	namespace implementation
 	{
-		struct tbuilder_size_fixater;
+		struct tbuilder_size_lock;
 	}
 
 	/* A fixed-size widget that wraps an arbitrary widget and forces it to the given size. */
 
-	class tsize_fixater : public tcontainer_
+	class tsize_lock : public tcontainer_
 	{
-		friend struct implementation::tbuilder_size_fixater;
+		friend struct implementation::tbuilder_size_lock;
 
 	public:
-		tsize_fixater() :
+		tsize_lock() :
 			tcontainer_(1),
 			generator_(
 				tgenerator_::build(false, false, tgenerator_::independent, false))
@@ -91,7 +91,7 @@ namespace gui2
 		/** See @ref tcontrol::get_control_type. */
 		const std::string& get_control_type() const override
 		{
-			static const std::string control_type = "size_fixater";
+			static const std::string control_type = "size_lock";
 			return control_type;
 		}
 
@@ -102,9 +102,9 @@ namespace gui2
 		}
 	};
 
-	struct tsize_fixater_definition : public tcontrol_definition
+	struct tsize_lock_definition : public tcontrol_definition
 	{
-		explicit tsize_fixater_definition(const config& cfg);
+		explicit tsize_lock_definition(const config& cfg);
 
 		struct tresolution : public tresolution_definition_
 		{
@@ -117,9 +117,9 @@ namespace gui2
 	namespace implementation
 	{
 
-		struct tbuilder_size_fixater : public tbuilder_control
+		struct tbuilder_size_lock : public tbuilder_control
 		{
-			explicit tbuilder_size_fixater(const config& cfg);
+			explicit tbuilder_size_lock(const config& cfg);
 
 			using tbuilder_control::build;
 
