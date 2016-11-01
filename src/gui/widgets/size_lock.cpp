@@ -45,6 +45,8 @@ void tsize_lock::finalize(tbuilder_grid_const_ptr widget_builder)
 	grid().set_id(id);
 	twidget* old_grid = grid().swap_child(id, generator_, true);
 	delete old_grid;
+
+	generator_->select_item(0u, true);
 }
 
 tsize_lock_definition::tsize_lock_definition(const config& cfg) :
@@ -75,6 +77,10 @@ tsize_lock_definition::tsize_lock_definition(const config& cfg) :
 tsize_lock_definition::tresolution::tresolution(const config& cfg) :
 	tresolution_definition_(cfg), grid(nullptr)
 {
+	// Add a dummy state since every widget needs a state.
+	static config dummy("draw");
+	state.push_back(tstate_definition(dummy));
+
 	const config& child = cfg.child("grid");
 	VALIDATE(child, _("No grid defined."));
 
